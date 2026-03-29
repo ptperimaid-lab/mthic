@@ -1,87 +1,133 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mining App</title>
+  <title>VRX Mining</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #0f172a, #020617);
+      font-family: Arial;
+      background: linear-gradient(#020617, #0f172a);
       color: white;
-      text-align: center;
     }
 
     .container {
-      padding: 20px;
+      padding: 15px;
+    }
+
+    .top {
+      text-align: center;
+      margin-top: 10px;
     }
 
     .balance {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: bold;
-      margin-top: 20px;
     }
 
-    .energy {
-      margin-top: 5px;
+    .sub {
       color: #94a3b8;
-      font-size: 14px;
+      font-size: 12px;
     }
 
-    .mine-container {
-      margin-top: 40px;
+    .card {
+      background: linear-gradient(45deg, #1e293b, #334155);
+      border-radius: 15px;
+      padding: 15px;
+      margin-top: 20px;
+      box-shadow: 0 0 20px #00000050;
     }
 
-    .mine-btn {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
+    .lottery {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-yellow {
+      background: gold;
+      color: black;
       border: none;
-      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 10px;
       font-weight: bold;
-      color: white;
-      background: radial-gradient(circle, #22c55e, #15803d);
-      box-shadow: 0 0 30px #22c55e80;
-      transition: 0.1s;
     }
 
-    .mine-btn:active {
-      transform: scale(0.9);
-      box-shadow: 0 0 10px #22c55e;
+    .center-box {
+      margin: 30px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 20px;
+      background: #cbd5e1;
+    }
+
+    .pending {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .pending h1 {
+      color: #22c55e;
+      font-size: 40px;
+      margin: 5px;
     }
 
     .progress {
-      margin-top: 20px;
       height: 8px;
       background: #1e293b;
       border-radius: 10px;
-      overflow: hidden;
+      margin-top: 10px;
     }
 
-    .progress-bar {
+    .bar {
       height: 100%;
-      width: 100%;
+      width: 0%;
       background: #22c55e;
-      transition: 0.3s;
     }
 
-    .tap-effect {
-      position: absolute;
-      color: #22c55e;
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
       font-weight: bold;
-      animation: floatUp 1s ease-out forwards;
     }
 
-    @keyframes floatUp {
-      0% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-50px);
-      }
+    .claim {
+      background: #22c55e;
+      color: black;
+    }
+
+    .upgrade {
+      background: #334155;
+      color: white;
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #020617;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .nav div {
+      text-align: center;
+    }
+
+    .active {
+      color: orange;
     }
   </style>
 </head>
@@ -90,66 +136,75 @@
 
 <div class="container">
 
-  <div class="balance" id="saldo">0 TOKEN</div>
-  <div class="energy">Energy: <span id="energy">100</span>%</div>
-
-  <div class="progress">
-    <div class="progress-bar" id="bar"></div>
+  <!-- TOP -->
+  <div class="top">
+    <div class="balance">0 VRX</div>
+    <div class="sub">~ 0.00 $ | 0.00 TRX</div>
+    <div class="sub">LEVEL 1 | PER DAY 240</div>
   </div>
 
-  <div class="mine-container">
-    <button class="mine-btn" onclick="mine(event)">⛏️ MINE</button>
+  <!-- LOTTERY -->
+  <div class="card lottery">
+    <div>
+      <b>VRX LOTTERY</b><br>
+      <span class="sub">Win big prizes!</span>
+    </div>
+    <button class="btn-yellow">PLAY</button>
+  </div>
+
+  <!-- CENTER ICON -->
+  <div class="center-box"></div>
+
+  <!-- PENDING -->
+  <div class="pending">
+    <div class="sub">PENDING REWARDS</div>
+    <h1 id="reward">0.00</h1>
+  </div>
+
+  <!-- STORAGE -->
+  <div class="sub">STORAGE</div>
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <!-- BUTTON -->
+  <div class="row">
+    <button class="btn claim" onclick="claim()">CLAIM</button>
+    <button class="btn upgrade">UPGRADE</button>
   </div>
 
 </div>
 
+<!-- NAV -->
+<div class="nav">
+  <div class="active">Home</div>
+  <div>CPU</div>
+  <div>Chain</div>
+  <div>Games</div>
+  <div>Tasks</div>
+</div>
+
 <script>
-  let saldo = 0;
-  let energy = 100;
-  const maxEnergy = 100;
+  let reward = 0;
+  let max = 100;
 
-  function mine(e) {
-    if (energy < 10) {
-      alert("Energy habis!");
-      return;
-    }
-
-    saldo += 5;
-    energy -= 10;
-
-    showEffect(e);
-    updateUI();
-  }
-
-  function updateUI() {
-    document.getElementById("saldo").innerText = saldo + " TOKEN";
-    document.getElementById("energy").innerText = energy;
-    document.getElementById("bar").style.width = energy + "%";
-  }
-
-  // ⚡ Auto recharge
+  // idle mining (mirip verox)
   setInterval(() => {
-    if (energy < maxEnergy) {
-      energy += 2;
-      if (energy > maxEnergy) energy = maxEnergy;
+    if (reward < max) {
+      reward += 1;
       updateUI();
     }
   }, 2000);
 
-  // ✨ Efek klik seperti verox
-  function showEffect(e) {
-    let effect = document.createElement("div");
-    effect.className = "tap-effect";
-    effect.innerText = "+5";
+  function claim() {
+    alert("Reward di-claim!");
+    reward = 0;
+    updateUI();
+  }
 
-    effect.style.left = e.clientX + "px";
-    effect.style.top = e.clientY + "px";
-
-    document.body.appendChild(effect);
-
-    setTimeout(() => {
-      effect.remove();
-    }, 1000);
+  function updateUI() {
+    document.getElementById("reward").innerText = reward.toFixed(2);
+    document.getElementById("bar").style.width = (reward / max * 100) + "%";
   }
 </script>
 

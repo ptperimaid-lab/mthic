@@ -2,20 +2,113 @@
 <html>
 <head>
   <title>Mining App</title>
-</head>
-<body>
-  <h2>⛏️ Mining Game</h2>
-  <p id="saldo">Saldo: 0</p>
-
-  <button onclick="mine()">Mining</button>
-
-  <script>
-    let saldo = 0;
-
-    function mine() {
-      saldo += 1;
-      document.getElementById("saldo").innerText = "Saldo: " + saldo;
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
     }
-  </script>
+
+    .container {
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .balance {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .mine-btn {
+      margin-top: 20px;
+      padding: 20px;
+      font-size: 20px;
+      border: none;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(45deg, #22c55e, #4ade80);
+      color: black;
+      font-weight: bold;
+    }
+
+    .mine-btn:active {
+      transform: scale(0.95);
+    }
+
+    .energy {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    .progress {
+      height: 10px;
+      background: #334155;
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 100%;
+      background: #22c55e;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>⛏️ Mining App</h2>
+
+  <div class="card">
+    <div class="balance" id="saldo">0 TOKEN</div>
+    <div class="energy">Energy: <span id="energy">100</span>%</div>
+
+    <div class="progress">
+      <div class="progress-bar" id="bar"></div>
+    </div>
+
+    <button class="mine-btn" onclick="mine()">MINE</button>
+  </div>
+
+</div>
+
+<script>
+  let saldo = 0;
+  let energy = 100;
+
+  function mine() {
+    if (energy <= 0) {
+      alert("Energy habis!");
+      return;
+    }
+
+    saldo += 5;
+    energy -= 10;
+
+    updateUI();
+  }
+
+  function updateUI() {
+    document.getElementById("saldo").innerText = saldo + " TOKEN";
+    document.getElementById("energy").innerText = energy;
+    document.getElementById("bar").style.width = energy + "%";
+  }
+</script>
+
 </body>
 </html>

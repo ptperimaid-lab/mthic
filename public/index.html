@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mining App</title>
+</head>
+<body>
+  <h2>⛏️ Mining Game</h2>
+  <p id="saldo">Saldo: 0</p>
+
+  <button onclick="mine()">Mining</button>
+
+  <script>
+    let saldo = 0;
+
+    function mine() {
+      saldo += 1;
+      document.getElementById("saldo").innerText = "Saldo: " + saldo;
+    }
+  </script>
+</body>
+</html>

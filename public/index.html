@@ -3,12 +3,12 @@
 <head>
   <title>Mining App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <style>
     body {
       margin: 0;
-      font-family: Arial;
-      background: #0f172a;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #020617);
       color: white;
       text-align: center;
     }
@@ -17,46 +17,45 @@
       padding: 20px;
     }
 
-    .card {
-      background: #1e293b;
-      border-radius: 15px;
-      padding: 20px;
-      margin-top: 20px;
-    }
-
     .balance {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: bold;
-    }
-
-    .mine-btn {
       margin-top: 20px;
-      padding: 20px;
-      font-size: 20px;
-      border: none;
-      border-radius: 50%;
-      width: 120px;
-      height: 120px;
-      background: linear-gradient(45deg, #22c55e, #4ade80);
-      color: black;
-      font-weight: bold;
-    }
-
-    .mine-btn:active {
-      transform: scale(0.95);
     }
 
     .energy {
-      margin-top: 15px;
-      font-size: 14px;
+      margin-top: 5px;
       color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .mine-container {
+      margin-top: 40px;
+    }
+
+    .mine-btn {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      background: radial-gradient(circle, #22c55e, #15803d);
+      box-shadow: 0 0 30px #22c55e80;
+      transition: 0.1s;
+    }
+
+    .mine-btn:active {
+      transform: scale(0.9);
+      box-shadow: 0 0 10px #22c55e;
     }
 
     .progress {
-      height: 10px;
-      background: #334155;
+      margin-top: 20px;
+      height: 8px;
+      background: #1e293b;
       border-radius: 10px;
-      margin-top: 10px;
       overflow: hidden;
     }
 
@@ -64,6 +63,25 @@
       height: 100%;
       width: 100%;
       background: #22c55e;
+      transition: 0.3s;
+    }
+
+    .tap-effect {
+      position: absolute;
+      color: #22c55e;
+      font-weight: bold;
+      animation: floatUp 1s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
     }
   </style>
 </head>
@@ -72,17 +90,15 @@
 
 <div class="container">
 
-  <h2>⛏️ Mining App</h2>
+  <div class="balance" id="saldo">0 TOKEN</div>
+  <div class="energy">Energy: <span id="energy">100</span>%</div>
 
-  <div class="card">
-    <div class="balance" id="saldo">0 TOKEN</div>
-    <div class="energy">Energy: <span id="energy">100</span>%</div>
+  <div class="progress">
+    <div class="progress-bar" id="bar"></div>
+  </div>
 
-    <div class="progress">
-      <div class="progress-bar" id="bar"></div>
-    </div>
-
-    <button class="mine-btn" onclick="mine()">MINE</button>
+  <div class="mine-container">
+    <button class="mine-btn" onclick="mine(event)">⛏️ MINE</button>
   </div>
 
 </div>
@@ -90,9 +106,10 @@
 <script>
   let saldo = 0;
   let energy = 100;
+  const maxEnergy = 100;
 
-  function mine() {
-    if (energy <= 0) {
+  function mine(e) {
+    if (energy < 10) {
       alert("Energy habis!");
       return;
     }
@@ -100,6 +117,7 @@
     saldo += 5;
     energy -= 10;
 
+    showEffect(e);
     updateUI();
   }
 
@@ -107,6 +125,31 @@
     document.getElementById("saldo").innerText = saldo + " TOKEN";
     document.getElementById("energy").innerText = energy;
     document.getElementById("bar").style.width = energy + "%";
+  }
+
+  // ⚡ Auto recharge
+  setInterval(() => {
+    if (energy < maxEnergy) {
+      energy += 2;
+      if (energy > maxEnergy) energy = maxEnergy;
+      updateUI();
+    }
+  }, 2000);
+
+  // ✨ Efek klik seperti verox
+  function showEffect(e) {
+    let effect = document.createElement("div");
+    effect.className = "tap-effect";
+    effect.innerText = "+5";
+
+    effect.style.left = e.clientX + "px";
+    effect.style.top = e.clientY + "px";
+
+    document.body.appendChild(effect);
+
+    setTimeout(() => {
+      effect.remove();
+    }, 1000);
   }
 </script>
 

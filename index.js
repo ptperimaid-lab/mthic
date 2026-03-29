@@ -1,3 +1,6 @@
+const TelegramBot = require('node-telegram-bot-api');
+const express = require('express');
+
 const token = "8259270356:AAHPtDIZO8lwRjjVRXLmDVQfQLQ8TmFgzD4";
 const bot = new TelegramBot(token, { polling: true });
 
@@ -12,7 +15,7 @@ bot.onText(/\/start/, (msg) => {
         [
           {
             text: "⛏️ Mulai Mining",
-            web_app: { url: "https://mthic-production.up.railway.app/" }
+            web_app: { url: "https://mthic-production.up.railway.app" }
           }
         ]
       ]
